@@ -392,6 +392,20 @@ class StubTest extends \Codeception\PHPUnit\TestCase
         $this->assertEquals('ticky2', $tester->getT());
     }
 
+    public function testStubPrivateMethod()
+    {
+        $tester = Stub::construct(
+            'MyClassWithPrivateMethod',
+            [],
+            [
+                'privateMethodName' => function () {
+                    return 'randomstuff';
+                }
+            ]
+        );
+        $this->assertEquals('randomstuff', $tester->callPrivateMethodInside());
+    }
+
     public function testStubMakeEmptyInterface()
     {
         $stub = Stub::makeEmpty('\Countable', ['count' => 5]);
@@ -424,5 +438,18 @@ class MyClassWithPrivateProperties
     public function getT()
     {
         return $this->t;
+    }
+}
+
+class MyClassWithPrivateMethod
+{
+    public function callPrivateMethodInside()
+    {
+        return $this->privateMethodName();
+    }
+
+    private function privateMethodName()
+    {
+        return 1;
     }
 }
