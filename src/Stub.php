@@ -574,8 +574,11 @@ class Stub
         }
 
         foreach ($params as $param => $value) {
-            // redefine method
-            if ($reflectionClass->hasMethod($param)) {
+            if ($reflectionClass->hasProperty($param) && !is_callable($value)) {
+                $reflectionProperty = $reflectionClass->getProperty($param);
+                $reflectionProperty->setAccessible(true);
+                $reflectionProperty->setValue($mock, $value);
+            } elseif ($reflectionClass->hasMethod($param)) { // redefine method
                 if ($value instanceof StubMarshaler) {
                     $marshaler = $value;
                     $mock
